@@ -14,7 +14,7 @@ CashRegister::CashRegister()
 
 CashRegister::~CashRegister()
 {
-	//delete[]
+	delete[] receipts;
 }
 
 Receipt& CashRegister::createReceipt(double cost, double dph)

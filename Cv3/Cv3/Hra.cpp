@@ -2,6 +2,16 @@
 #include <iostream>
 #include <math.h>
 
+Hra::Hra()
+{
+	objekty = new Objekt * [4];
+}
+
+Hra::~Hra()
+{
+	delete[] objekty;
+}
+
 void Hra::vlozObjekt(Objekt* o)
 {
 	if (pocitadlo < sizeof(objekty)) {
@@ -9,6 +19,7 @@ void Hra::vlozObjekt(Objekt* o)
 		pocitadlo++;
 	}
 }
+
 
 int* Hra::najdiIdStatickychObjektu(double xmin, double xmax, double ymin, double ymax)
 {	

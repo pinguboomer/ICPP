@@ -8,8 +8,11 @@
 
 class Hra {
 	int pocitadlo = 0;
-	Objekt** objekty = new Objekt*[4];
+	Objekt** objekty;
+	
 public:
+	Hra();
+	~Hra();
 	void vlozObjekt(Objekt* o);
 	int* najdiIdStatickychObjektu(double xmin, double xmax, double ymin, double ymax);
 	PohyblivyObjekt** najdiPohybliveObjektyVOblasti(double x, double y, double r);

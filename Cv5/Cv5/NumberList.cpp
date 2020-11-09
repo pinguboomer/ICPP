@@ -33,7 +33,7 @@ void Model::NumberList::addPerson(Entity::Person p)
 string Model::NumberList::findPhoneNumber(string name) const
 {
 	if (name.empty()) {
-		throw exception("Name is empty");
+		throw invalid_argument("Name is empty");
 	}
 	Element* element = this->_first;
 		while (element != nullptr) {
@@ -48,7 +48,7 @@ string Model::NumberList::findPhoneNumber(string name) const
 string Model::NumberList::findPhoneNumber(int id) const
 {
 	if (id < 0) {
-		throw exception("id is < 0");
+		throw invalid_argument("id is < 0");
 	}
 	Element* element = this->_first;
 	while (element != nullptr) {

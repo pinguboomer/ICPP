@@ -6,7 +6,7 @@
 #include<stdexcept>
 using namespace std;
 namespace Entity {
-	class Person {		
+	struct Person {		
 	public:
 		string name;
 		string phone;

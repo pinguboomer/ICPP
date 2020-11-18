@@ -9,8 +9,8 @@ template<typename DataType, int startingValue = 5, int increasingCoefficient = 2
 class IncreasingContainer {
 private:
 	DataType* _array;
-	unsigned _arraySize;
-	unsigned _numberOfValidNodes;
+	int _arraySize;
+	int _numberOfValidNodes;
 public:
 	IncreasingContainer();
 	~IncreasingContainer();
@@ -26,14 +26,14 @@ public:
 
 };
 
-#endif
+
 
 template<typename DataType, int startingValue, int increasingCoefficient>
 inline IncreasingContainer<DataType, startingValue, increasingCoefficient>::IncreasingContainer()
 {
-	this->_arraySize = startingValue;
-	this->_numberOfValidNodes = 0;
-	this->_array = new DataType[_arraySize];
+	_arraySize = startingValue;
+	_numberOfValidNodes = 0;
+	_array = new DataType[_arraySize];
 }
 
 template<typename DataType, int startingValue, int increasingCoefficient>
@@ -79,7 +79,7 @@ template<typename DataType, int startingValue, int increasingCoefficient>
 inline DataType& IncreasingContainer<DataType, startingValue, increasingCoefficient>::operator[](int index)
 {
 	if (index < 0 || index > _numberOfValidNodes) {
-		throw std::invalid_argument("Neplatný index");
+		throw std::out_of_range("Neplatný index");
 	}
 	return _array[index];
 }
@@ -88,7 +88,7 @@ template<typename DataType, int startingValue, int increasingCoefficient>
 inline DataType IncreasingContainer<DataType, startingValue, increasingCoefficient>::operator[](int index) const
 {
 	if (index < 0 || index > _numberOfValidNodes) {
-		throw std::invalid_argument("Neplatný index");
+		throw std::out_of_range("Neplatný index");
 	}
 	return _array[index];
 }
@@ -103,49 +103,44 @@ template<typename DataType, int startingValue, int increasingCoefficient>
 inline void IncreasingContainer<DataType, startingValue, increasingCoefficient>::addToIndex(int index, const DataType& o)
 {
 	if (index < 0 || index > _numberOfValidNodes) {
-		throw std::invalid_argument("Neplatný index");
+		throw std::out_of_range("Neplatný index");
 	}
-	int k = _numberOfValidNodes;
-	if (k == _arraySize) {
+	if (!(isSpaceInArray())) {
 		increaseArray();
 	}
 	_numberOfValidNodes++;
-	DataType* temp = new DataType[_arraySize];
-	for (size_t i = 0; i < _numberOfValidNodes; i++)
+	DataType temp, temp2;
+	for (size_t i = index; i < _numberOfValidNodes; i++)
 	{
-		if (i < index) {
-			temp[i] = _array[i];
+		if (i == index) {
+			temp = _array[i];
+			_array[i] = o;
 		}
-		else if (i == index) {
-			temp[i] = o;
-		}
-		else {
-			temp[i] = _array[i - 1];
+		else if(i > index) {
+			_array[i + 1] = _array[i];
+			_array[i] = temp;			
 		}
 	}
-	delete[] _array;
-	_array = temp;
 }
 
 template<typename DataType, int startingValue, int increasingCoefficient>
 inline void IncreasingContainer<DataType, startingValue, increasingCoefficient>::remove(int index)
 {
 	if (index < 0 || index > _numberOfValidNodes) {
-		throw std::invalid_argument("Neplatný index");
+		throw std::out_of_range("Neplatný index");
 	}
-	//_numberOfValidNodes--;
-	DataType* temp = new DataType[_arraySize];
-	for (size_t i = 0; i < _numberOfValidNodes; i++)
-	{
-		if (i < index) {
-			temp[i] = _array[i];
-		}
-		else {
-			temp[i] = _array[i + 1];
-		}
-	}
-	delete[] _array;
-	_array = temp;
 
+	DataType* temp = new DataType[_arraySize];
+	temp = _array;
+	for (size_t i = index; i < _numberOfValidNodes; i++)
+	{
+		if (i >= index) {
+			_array[i] = _array[i + 1];
+		}
+	}
+	_numberOfValidNodes--;
+	_array = temp;
+	
 }
 
+#endif

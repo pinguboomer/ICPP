@@ -10,15 +10,19 @@ Person* loadBin()
 {
 	ifstream input{};
 	input.open("data.bin", ios::binary);
-	input.seekg(0, ios::end);
-	int loadedSize = input.tellg() / sizeof(Person);
-	input.seekg(0, ios::beg);
-	Person* array = new Person[loadedSize];
-	for (size_t i = 0; i < loadedSize; i++) {
-		input.read((char*)&array[i], sizeof(Person));
+	if (input.is_open()) {
+		input.seekg(0, ios::end);
+		int loadedSize = input.tellg() / sizeof(Person);
+		input.seekg(0, ios::beg);
+		Person* array = new Person[loadedSize];
+		for (size_t i = 0; i < loadedSize; i++) {
+			input.read((char*)&array[i], sizeof(Person));
+		}
+		input.close();
+		return array;
 	}
-	input.close();
-	return array;
+	return NULL;
+	
 }
 
 void saveBin()
@@ -38,9 +42,11 @@ void saveBin()
 	}
 	ofstream output{};
 	output.open("data.bin", ios::out | ios::binary);
-	output.write((const char*)&array, sizeof(array));
-
-	output.close();
+	if (output.is_open()) {
+		output.write((const char*)&array, sizeof(array));
+		output.close();
+	}
+	
 }
 
 void saveTxt() {

@@ -10,10 +10,11 @@ using namespace std;
 
 struct ATubeNode;
 struct ITube {
+public:
     virtual ~ITube();
+    virtual void addNode(ATubeNode* prvek) const = 0;
     virtual const ATubeNode* getNode(int x, int y) const = 0;
     virtual bool isTubeOK() const = 0;
-    virtual const int getSize() const = 0;
 };
 
 struct ATubeNode {
@@ -24,27 +25,24 @@ struct ATubeNode {
     int type;
 };
 
-class Tube : public ITube {
+struct Tube : ITube {
 private:
     ATubeNode*** matrix;
     int size;
 public:
+    Tube();
     Tube(const int size);
     ~Tube();
-    void addNode(ATubeNode* Node);
-    const ATubeNode* getNode(int x, int y) const;
-    bool isTubeOK() const;
-    const int getSize() const;
+    void addNode(ATubeNode* Node) const override;
+    const ATubeNode* getNode(int x, int y) const override;
+    bool isTubeOK() const override;
 };
 
-std::ifstream& operator >> (std::ifstream& output, Tube& a);
-
-class Node : public ATubeNode {
-public:
+struct Node : ATubeNode {
     Node();
     Node(const int x, const int y, int type);
     ~Node();
-    bool isCorrect(const ITube* Tube) const;
+    bool isCorrect(const ITube* Tube) const override;
 };
 
 #endif // !ITUBE_H

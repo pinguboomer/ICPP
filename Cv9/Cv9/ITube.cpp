@@ -1,8 +1,15 @@
 #include "ITube.h"
 
 
+Tube::Tube()
+{
+}
+
 Tube::Tube(int size)
 {
+	if (size < 1) {
+		throw std::out_of_range("Wrong size");
+	}
 	this->size = size;
 	matrix = new ATubeNode * *[size];
 	for (int i = 0; i < size; i++) {
@@ -11,6 +18,7 @@ Tube::Tube(int size)
 			matrix[i][j] = 0;
 		}
 	}
+
 }
 
 Tube::~Tube()
@@ -28,7 +36,7 @@ Tube::~Tube()
 
 }
 
-void Tube::addNode(ATubeNode* node)
+void Tube::addNode(ATubeNode* node) const
 {
 	if (node->x > size && node->y > size) {
 		throw std::out_of_range("Wrong node parameters");
@@ -65,11 +73,6 @@ bool Tube::isTubeOK() const
 
 }
 
-const int Tube::getSize() const
-{
-	return size;
-}
-
 
 Node::Node()
 {
@@ -97,84 +100,44 @@ ATubeNode::~ATubeNode()
 
 bool Node::isCorrect(const ITube* tube) const
 {
-	if (this->type == 1) {
+	if (this->type == 1) { // "-"
 		return tube->getNode(x, y - 1) != nullptr
 			&& tube->getNode(x, y + 1) != nullptr
 			&& tube->getNode(x, y - 1)->type != 2
 			&& tube->getNode(x, y + 1)->type != 2;
 	}
 
-	if (this->type == 2) {
+	if (this->type == 2) { // "I"
 		return tube->getNode(x - 1, y) != nullptr
 			&& tube->getNode(x + 1, y) != nullptr
 			&& tube->getNode(x - 1, y)->type != 1
 			&& tube->getNode(x + 1, y)->type != 1
-			&& tube->getNode(x - 1, y)->type != 4;
+			&& tube->getNode(x + 1, y)->type != 4;
 	}
 
-	if (this->type == 3) {
+	if (this->type == 3) { // "+"
 		return tube->getNode(x - 1, y) != nullptr
 			&& tube->getNode(x + 1, y) != nullptr
 			&& tube->getNode(x, y - 1) != nullptr
 			&& tube->getNode(x, y + 1) != nullptr
-			&& tube->getNode(x, y - 1)->type != 1
-			&& tube->getNode(x, y + 1)->type != 1
-			&& tube->getNode(x - 1, y)->type != 2
-			&& tube->getNode(x + 1, y)->type != 2
-			&& tube->getNode(x, y - 1)->type != 4;
+			&& tube->getNode(x - 1, y)->type != 1
+			&& tube->getNode(x + 1, y)->type != 1
+			&& tube->getNode(x, y - 1)->type != 2
+			&& tube->getNode(x, y + 1)->type != 2
+			&& tube->getNode(x + 1, y)->type != 4;
 	}
 
-	if (this->type == 4) {
-		return tube->getNode(x - 1, y) != nullptr
-			&& tube->getNode(x + 1, y) != nullptr
+	if (this->type == 4) { // "T"
+		return tube->getNode(x + 1, y) != nullptr
 			&& tube->getNode(x, y - 1) != nullptr
-			&& tube->getNode(x, y - 1)->type != 1
-			&& tube->getNode(x - 1, y)->type != 2
-			&& tube->getNode(x + 1, y)->type != 2
-			&& tube->getNode(x, y - 1)->type != 4;
+			&& tube->getNode(x, y + 1) != nullptr
+			&& tube->getNode(x + 1, y)->type != 1
+			&& tube->getNode(x, y - 1)->type != 2
+			&& tube->getNode(x, y + 1)->type != 2
+			&& tube->getNode(x - 1, y)->type != 4;
 	}
 
+	// "O"
 	return true;
 
 }
-
-
-std::ifstream& operator >> (std::ifstream& input, Tube& tube)
-{
-	char c = 0;
-	ATubeNode* newNode = nullptr;
-	std::string line;
-
-	while (std::getline(input, line)) {
-		int j = 0;
-		for (int i = 0; i < line.length(); i++) {
-			c = line.at(i);
-
-			switch (c) {
-			case '-':
-				newNode = new Node(i, j, 1);
-				break;
-			case 'I':
-				newNode = new Node(i, j, 2);
-				break;
-			case '+':
-				newNode = new Node(i, j, 3);
-				break;
-			case 'T':
-				newNode = new Node(i, j, 4);
-				break;
-			case 'O':
-				newNode = new Node(i, j, 0);
-				break;
-			}
-			if (newNode != nullptr) {
-				tube.addNode(newNode);
-			}
-			j++;
-		}
-	}
-
-	return input;
-}
-
-
